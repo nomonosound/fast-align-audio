@@ -40,6 +40,11 @@ static float fastmse(float abort_threshold, size_t n, float *a, float *b) {
     return sum / n;
 }
 
+
+static size_t max(size_t a, size_t b) {
+    return (a > b) ? a : b;
+}
+
 static size_t min(size_t a, size_t b) {
     return (a < b) ? a : b;
 }
@@ -53,7 +58,7 @@ ssize_t fast_find_alignment(size_t a_len, float *a,
                             size_t max_offset, size_t max_lookahead) {
     float min_val = LARGE_VAL;
     ssize_t min_idx = 0;
-    for (size_t i = 0; i < min3(a_len, b_len, max_offset); ++i) {
+    for (size_t i = 0; i < min(max(a_len, b_len), max_offset); ++i) {
         if (i < a_len) {
             float d1 = fastmse(min_val, min3(a_len - i, b_len, max_lookahead), &a[i], b);
             if (d1 < min_val) {
