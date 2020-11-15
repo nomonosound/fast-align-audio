@@ -14,9 +14,14 @@ Use:
 import numpy as np
 import fastalign
 
-a = np.random.uniform(size=10_000).astype("float32")
-print(fastalign(a, np.pad(a, (121, 0)), 1_000, 5_000))
+arr = np.random.uniform(size=10_000).astype("float32")
+
+print(fastalign.best_offset(arr, np.pad(arr, (121, 0)), 1_000, 5_000))
 # => -121
-print(fastalign(a, a[121:], 1_000, 5_000))
+print(fastalign.best_offset(arr, arr[121:], 1_000, 5_000))
 # => 121
+
+arr1, arr2 = fastalign.align(arr, np.pad(arr, (121, 0)), 1_000, 5_000, align_mode="crop")
+np.array_equal(arr, arr1) and np.array_equal(arr, arr2)
+# => True
 ```
