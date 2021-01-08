@@ -79,12 +79,17 @@ def _align(x, y, offset, align_mode):
 
 
 def _fix(x, y, fix_mode):
-    if fix_mode == "shortest":
+    if fix_mode is None:
+        return x, y
+    elif fix_mode == "shortest":
         min_len = min(len(x), len(y))
         x = x[:min_len]
         y = y[:min_len]
+        return x, y
     elif fix_mode == "longest":
         max_len = max(len(x), len(y))
         x = np.pad(x, (0, max_len - len(x)))
         y = np.pad(y, (0, max_len - len(y)))
-    return x, y
+        return x, y
+    else:
+        raise ValueError(f"fix_length={fix_mode!r} not understood")
