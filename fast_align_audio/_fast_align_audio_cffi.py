@@ -13,7 +13,13 @@ c_file_path = os.path.join(script_dir, "_faa.c")
 with open(c_file_path, "r") as file:
     c_code = file.read()
 
-ffibuilder.set_source("_fast_align_audio", c_code, extra_compile_args=[])
+extra_compile_args = []
+if os.name == "posix":
+    extra_compile_args = ["-mavx", "-Wall", "-Wextra", "-pedantic"]
+
+ffibuilder.set_source(
+    "_fast_align_audio", c_code, extra_compile_args=extra_compile_args
+)
 
 
 if __name__ == "__main__":
