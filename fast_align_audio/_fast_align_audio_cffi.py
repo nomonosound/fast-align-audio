@@ -15,7 +15,7 @@ with open(c_file_path, "r") as file:
 
 extra_compile_args = []
 if os.name == "posix":
-    extra_compile_args = ["-mavx", "-Wall", "-Wextra", "-pedantic"]
+    extra_compile_args = ["-mavx", "-Wall", "-Wextra"]
 
 ffibuilder.set_source(
     "_fast_align_audio", c_code, extra_compile_args=extra_compile_args
