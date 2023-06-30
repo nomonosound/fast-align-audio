@@ -1,4 +1,4 @@
-# fast-align-audio: high-speed numpy audio alignment
+# fast-align-audio: high-speed NumPy audio alignment
 
 fast-align-audio is designed to swiftly align two similar NumPy arrays — a common need
 in various fields including audio signal processing. If you have two arrays where one
@@ -37,7 +37,7 @@ Here is a basic usage example:
 import numpy as np
 import fast_align_audio
 
-# Create a random numpy array
+# Create a random NumPy array
 arr = np.random.uniform(size=10_000).astype("float32")
 
 # Find the best offset for aligning two arrays
