@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install cffi>=1.0
+          pip install cffi>=1.0 wheel
       - name: Build and Create Wheel
         run: |
           python setup.py build
