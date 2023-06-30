@@ -35,7 +35,7 @@ setup(
     packages=find_packages(),
     setup_requires=["cffi>=1.0.0"],
     cffi_modules=["fast_align_audio/_fast_align_audio_cffi.py:ffibuilder"],
-    install_requires=["cffi>=1.0.0"],
+    install_requires=[],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",

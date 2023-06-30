@@ -14,19 +14,8 @@ used to align other kinds of time-series data that are represented as NumPy arra
 
 # Installation
 
-Before installing fast-align-audio, ensure that you have `cffi>=1.0` installed. You can
-install this dependency using `pip`:
-
 ```
-$ pip install cffi>=1.0
-```
-
-With `cffi` installed, you can proceed to build and install fast-align-audio:
-
-```
-$ python setup.py build
-$ python setup.py bdist_wheel
-$ pip install dist/fast_align_audio-0.1-cp39-cp39-win_amd64.whl
+$ pip install fast-align-audio
 ```
 
 # Usage
@@ -34,8 +23,8 @@ $ pip install dist/fast_align_audio-0.1-cp39-cp39-win_amd64.whl
 Here is a basic usage example:
 
 ```py
-import numpy as np
 import fast_align_audio
+import numpy as np
 
 # Create a random NumPy array
 arr = np.random.uniform(size=10_000).astype("float32")
