@@ -1,10 +1,3 @@
-from cffi import FFI
-
-
-ffibuilder = FFI()
-ffibuilder.cdef("ssize_t fast_find_alignment(size_t, float *, size_t, float *, size_t, size_t);")
-ffibuilder.set_source("_fastalign",
-r"""
 #include <immintrin.h>
 #include <math.h>
 #include <string.h>
@@ -78,8 +71,3 @@ ssize_t fast_find_alignment(size_t a_len, float *a,
     }
     return min_idx;
 }
-""", extra_compile_args=[])
-
-
-if __name__ == "__main__":
-    ffibuilder.compile(verbose=True)

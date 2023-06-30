@@ -1,5 +1,5 @@
 import numpy as np
-import _fastalign
+import _fast_align_audio
 
 
 def best_offset(a, b, max_offset, max_lookahead=None):
@@ -23,7 +23,7 @@ def best_offset(a, b, max_offset, max_lookahead=None):
         a, b (float32 C-contiguous NumPy arrays):
             The arrays to compare
         max_offset (int > 0):
-            Maximum expected offset. `fastalign` will not find any larger offsets.
+            Maximum expected offset. It will not find any larger offsets.
         max_lookahead (int > 0, optional):
             Maximum number of array elements to use for each mse computation.
             If `None` (the default), there is no maximum.
@@ -34,11 +34,11 @@ def best_offset(a, b, max_offset, max_lookahead=None):
     ), "Arrays must be C-contiguous"
     if max_lookahead is None:
         max_lookahead = max(len(a), len(b))
-    return _fastalign.lib.fast_find_alignment(
+    return _fast_align_audio.lib.fast_find_alignment(
         len(a),
-        _fastalign.ffi.cast("float *", a.ctypes.data),
+        _fast_align_audio.ffi.cast("float *", a.ctypes.data),
         len(b),
-        _fastalign.ffi.cast("float *", b.ctypes.data),
+        _fast_align_audio.ffi.cast("float *", b.ctypes.data),
         max_offset,
         max_lookahead,
     )
