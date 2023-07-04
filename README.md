@@ -30,10 +30,10 @@ import numpy as np
 arr = np.random.uniform(size=10_000).astype("float32")
 
 # Find the best offset for aligning two arrays
-print(fast_align_audio.best_offset(arr, np.pad(arr, (121, 0)), 1_000, 5_000))
+print(fast_align_audio.find_best_alignment_offset(arr, np.pad(arr, (121, 0)), 1_000, 5_000))
 # Output: -121
 
-print(fast_align_audio.best_offset(arr, arr[121:], 1_000, 5_000))
+print(fast_align_audio.find_best_alignment_offset(arr, arr[121:], 1_000, 5_000))
 # Output: 121
 
 # Align two arrays and confirm they're equal post alignment
@@ -42,7 +42,13 @@ np.array_equal(arr, arr1) and np.array_equal(arr, arr2)
 # Output: True
 ```
 
-In this example, we first create a random numpy array. We then call the best_offset
+In this example, we first create a random numpy array. We then call the find_best_alignment_offset
 method to find the best offset to align two arrays, and we use the align method to align
 the arrays. The np.array_equal method checks if two arrays are equal, demonstrating the
 successful alignment of the two original arrays.
+
+# Development
+
+* Install dev/build/test dependencies as denoted in setup.py
+* `python setup.py develop`
+* `pytest`

@@ -2,56 +2,49 @@ import numpy as np
 import _fast_align_audio
 
 
-def best_offset(a, b, max_offset, max_lookahead=None):
+def find_best_alignment_offset(
+    reference_audio, delayed_audio, max_offset_samples, lookahead_samples=None
+):
     """
-    Find best offset of `a` w.r.t. `b`.
+    Find best offset of `delayed_audio` w.r.t. `reference_audio`.
 
     Best = smallest mean squared error (mse).
 
-    If the returned offset is positive, it means the smallest mse is:
-
-        ((a[n:...] - b[:...])**2).mean()
-
-    If the returned is negative, it means the smallest mse is:
-
-        ((a[:...] - b[n:...])**2).mean()
-
-    (Here, `...` means that you have to account for different array lengths for
-    this computation to actually work.)
-
     Args:
-        a, b (float32 C-contiguous NumPy arrays):
+        reference_audio, delayed_audio (float32 C-contiguous NumPy arrays):
             The arrays to compare
-        max_offset (int > 0):
+        max_offset_samples (int > 0):
             Maximum expected offset. It will not find any larger offsets.
-        max_lookahead (int > 0, optional):
+        lookahead_samples (int > 0, optional):
             Maximum number of array elements to use for each mse computation.
             If `None` (the default), there is no maximum.
     """
-    assert {a.dtype, b.dtype} == {np.dtype("float32")}, "Arrays must be float32"
+    assert {reference_audio.dtype, delayed_audio.dtype} == {
+        np.dtype("float32")
+    }, "Arrays must be float32"
     assert (
-        a.flags["C_CONTIGUOUS"] and b.flags["C_CONTIGUOUS"]
+        reference_audio.flags["C_CONTIGUOUS"] and delayed_audio.flags["C_CONTIGUOUS"]
     ), "Arrays must be C-contiguous"
-    if max_lookahead is None:
-        max_lookahead = max(len(a), len(b))
+    if lookahead_samples is None:
+        lookahead_samples = max(len(reference_audio), len(delayed_audio))
     return _fast_align_audio.lib.fast_find_alignment(
-        len(a),
-        _fast_align_audio.ffi.cast("float *", a.ctypes.data),
-        len(b),
-        _fast_align_audio.ffi.cast("float *", b.ctypes.data),
-        max_offset,
-        max_lookahead,
+        len(delayed_audio),
+        _fast_align_audio.ffi.cast("float *", delayed_audio.ctypes.data),
+        len(reference_audio),
+        _fast_align_audio.ffi.cast("float *", reference_audio.ctypes.data),
+        max_offset_samples,
+        lookahead_samples,
     )
 
 
 def align(a, b, max_offset, max_lookahead=None, *, align_mode, fix_length=None):
     """
-    Align `a` and `b`. See the documentation of `best_offset` for most of the args.
+    Align `a` and `b`. See the documentation of `find_best_alignment_offset` for most of the args.
 
     Args:
         align_mode (Either `"crop"` or `"pad"`): How to align `a` and `b`.
-            If `crop`, `best_offset` number of elements are removed from the
-            front of the "too-long" array. If `pad`, `best_offset` number of
+            If `crop`, "best_offset" number of elements are removed from the
+            front of the "too-long" array. If `pad`, "best_offset" number of
             elements are padding to the front of the "too-short" array.
         fix_length (Either `"shortest"`, `"longest"` or `None`): How to fix the
             lengths of `a` and `b` after alignment. If `shortest`, the longer
@@ -59,7 +52,7 @@ def align(a, b, max_offset, max_lookahead=None, *, align_mode, fix_length=None):
             If `longest`, the shorter array is padded (to the end/right) to the
             length of the longest one.  If `None`, lengths are not changed.
     """
-    offset = best_offset(a, b, max_offset, max_lookahead)
+    offset = find_best_alignment_offset(a, b, max_offset, max_lookahead)
     if offset > 0:
         # mse(a[offset:], b) = min
         a, b = _align(a, b, offset, align_mode)

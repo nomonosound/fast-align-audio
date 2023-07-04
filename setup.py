@@ -27,13 +27,15 @@ setup(
     name="fast-align-audio",
     version=find_version("fast_align_audio", "__init__.py"),
     description=(
-        "A fast python library for aligning similar audio snippets passed in as NumPy arrays."
+        "A fast python library for aligning similar audio snippets passed in as NumPy"
+        " arrays."
     ),
     license="ISC",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    packages=find_packages(),
+    packages=find_packages(exclude=["test_fixtures", "tests"]),
     setup_requires=["cffi>=1.0.0"],
+    tests_require=["librosa==0.10.0.post2", "pytest"],
     cffi_modules=["fast_align_audio/_alignment_cffi.py:ffibuilder"],
     install_requires=[],
     classifiers=[
