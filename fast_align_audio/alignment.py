@@ -22,7 +22,10 @@ def find_best_alignment_offset_with_corrcoef(
     max_offset_samples,
     lookahead_samples: Optional[int] = None,
 ):
-    """Return the estimated delay (in samples) between the two sounds based on autocorrelation"""
+    """
+    Return the estimated delay (in samples) between the two sounds based on
+    correlation coefficients
+    """
     if lookahead_samples is not None and len(original_signal) > lookahead_samples:
         middle_of_signal_index = int(np.floor(len(original_signal) / 2))
         original_signal_slice = original_signal[
