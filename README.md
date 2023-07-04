@@ -30,14 +30,30 @@ import numpy as np
 arr = np.random.uniform(size=10_000).astype("float32")
 
 # Find the best offset for aligning two arrays
-print(fast_align_audio.find_best_alignment_offset(arr, np.pad(arr, (121, 0)), 1_000, 5_000))
-# Output: -121
-
-print(fast_align_audio.find_best_alignment_offset(arr, arr[121:], 1_000, 5_000))
+print(
+    fast_align_audio.find_best_alignment_offset(
+        reference_signal=arr,
+        delayed_signal=np.pad(arr, (121, 0)),
+        max_offset_samples=1000,
+        lookahead_samples=5000,
+    )
+)
 # Output: 121
 
+print(
+    fast_align_audio.find_best_alignment_offset(
+        reference_signal=arr,
+        delayed_signal=arr[121:],
+        max_offset_samples=1000,
+        lookahead_samples=5000,
+    )
+)
+# Output: -121
+
 # Align two arrays and confirm they're equal post alignment
-arr1, arr2 = fast_align_audio.align(arr, np.pad(arr, (121, 0)), 1_000, 5_000, align_mode="crop")
+arr1, arr2 = fast_align_audio.align(
+    arr, np.pad(arr, (121, 0)), 1_000, 5_000, align_mode="crop"
+)
 np.array_equal(arr, arr1) and np.array_equal(arr, arr2)
 # Output: True
 ```
