@@ -34,7 +34,7 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages(),
     setup_requires=["cffi>=1.0.0"],
-    cffi_modules=["fast_align_audio/_fast_align_audio_cffi.py:ffibuilder"],
+    cffi_modules=["fast_align_audio/_alignment_cffi.py:ffibuilder"],
     install_requires=[],
     classifiers=[
         "Development Status :: 3 - Alpha",

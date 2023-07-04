@@ -1,3 +1,3 @@
-from .fast_align_audio import best_offset, align
+from .alignment import best_offset, align
 
 __version__ = "0.1.1"
