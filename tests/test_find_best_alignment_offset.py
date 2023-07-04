@@ -3,6 +3,7 @@ from pathlib import Path
 
 import librosa
 import numpy as np
+import pytest
 
 import fast_align_audio
 
@@ -19,36 +20,26 @@ class TestFindBestAlignmentOffset:
         )
         assert offset == 121
 
-    def test_multi_mic1(self):
-        main, sr = librosa.load(TEST_FIXTURES_DIR / "multi_mic1" / "main.flac", sr=None)
-        other1, _ = librosa.load(
-            TEST_FIXTURES_DIR / "multi_mic1" / "other1.flac", sr=None
-        )
-        other2, _ = librosa.load(
-            TEST_FIXTURES_DIR / "multi_mic1" / "other2.flac", sr=None
-        )
-        other3, _ = librosa.load(
-            TEST_FIXTURES_DIR / "multi_mic1" / "other3.flac", sr=None
-        )
+    @pytest.mark.parametrize("folder_name", ["multi_mic1", "multi_mic2"])
+    def test_multi_mic(self, folder_name):
+        main, sr = librosa.load(TEST_FIXTURES_DIR / folder_name / "main.flac", sr=None)
+
+        other_filenames = ["other1.flac", "other2.flac", "other3.flac"]
+        others = []
+        for other_filename in other_filenames:
+            other, _ = librosa.load(
+                TEST_FIXTURES_DIR / folder_name / other_filename, sr=None
+            )
+            others.append(other)
 
         max_offset_samples = int(0.05 * sr)
 
-        offset1 = fast_align_audio.find_best_alignment_offset(
-            main, other1, max_offset_samples=max_offset_samples
-        )
-        print(offset1, "offset1")
-
-        offset2 = fast_align_audio.find_best_alignment_offset(
-            main, other2, max_offset_samples=max_offset_samples
-        )
-        print(offset2, "offset2")
-
-        offset3 = fast_align_audio.find_best_alignment_offset(
-            main, other3, max_offset_samples=max_offset_samples
-        )
-        print(offset3, "offset3")
-
-        # TODO: Assert that the offsets are sane
-
-    # TODO
-    # def test_multi_mic2(self):
+        for i, other in enumerate(others):
+            offset_mse = fast_align_audio.find_best_alignment_offset(
+                main, other, max_offset_samples=max_offset_samples, method="mse"
+            )
+            offset_corr = fast_align_audio.find_best_alignment_offset(
+                main, other, max_offset_samples=max_offset_samples, method="corr"
+            )
+            print(f"{other_filenames[i]} mse vs. corr:", offset_mse, offset_corr)
+            assert offset_mse == pytest.approx(offset_corr, abs=1)

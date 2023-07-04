@@ -37,7 +37,7 @@ setup(
     setup_requires=["cffi>=1.0.0"],
     tests_require=["librosa==0.10.0.post2", "pytest"],
     cffi_modules=["fast_align_audio/_alignment_cffi.py:ffibuilder"],
-    install_requires=[],
+    install_requires=["numpy"],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
