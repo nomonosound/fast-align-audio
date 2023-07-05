@@ -46,6 +46,20 @@ class TestFindBestAlignmentOffset:
         )
         assert_array_almost_equal(aligned, reference)
 
+    def test_align_pair(self):
+        reference = np.random.uniform(size=1000).astype("float32")
+        arr1, arr2 = fast_align_audio.align_pair(
+            reference, np.pad(reference, (121, 0)), offset=121, align_mode="crop"
+        )
+        assert np.array_equal(reference, arr1) and np.array_equal(reference, arr2)
+
+        arr1, arr2 = fast_align_audio.align_pair(
+            reference, reference[121:], offset=-121, align_mode="crop"
+        )
+        assert np.array_equal(reference[400:500], arr1[400:500]) and np.array_equal(
+            reference[400:500], arr2[400:500]
+        )
+
     def test_robustness_to_gain_differences(self):
         folder_name = "multi_mic1"
         main, sr = librosa.load(TEST_FIXTURES_DIR / folder_name / "main.flac", sr=None)

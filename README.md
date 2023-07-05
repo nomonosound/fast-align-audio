@@ -27,13 +27,14 @@ import fast_align_audio
 import numpy as np
 
 # Create a random NumPy array
-arr = np.random.uniform(size=10_000).astype("float32")
+reference = np.random.uniform(size=10_000).astype("float32")
+delayed = np.pad(reference, (121, 0))
 
 # Find the best offset for aligning two arrays
 print(
     fast_align_audio.find_best_alignment_offset(
-        reference_signal=arr,
-        delayed_signal=np.pad(arr, (121, 0)),
+        reference_signal=reference,
+        delayed_signal=delayed,
         max_offset_samples=1000,
         lookahead_samples=5000,
     )
@@ -42,8 +43,8 @@ print(
 
 print(
     fast_align_audio.find_best_alignment_offset(
-        reference_signal=arr,
-        delayed_signal=arr[121:],
+        reference_signal=reference,
+        delayed_signal=reference[121:],
         max_offset_samples=1000,
         lookahead_samples=5000,
     )
@@ -51,10 +52,11 @@ print(
 # Output: -121
 
 # Align two arrays and confirm they're equal post alignment
-arr1, arr2 = fast_align_audio.align(
-    arr, np.pad(arr, (121, 0)), 1000, 5000, align_mode="crop"
+offset = 121  # this can be obtained with find_best_alignment_offset
+arr1, arr2 = fast_align_audio.align_pair(
+    reference, np.pad(reference, (121, 0)), offset=offset, align_mode="crop"
 )
-np.array_equal(arr, arr1) and np.array_equal(arr, arr2)
+np.array_equal(reference, arr1) and np.array_equal(reference, arr2)
 # Output: True
 ```
 

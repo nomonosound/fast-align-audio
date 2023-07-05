@@ -151,35 +151,39 @@ def find_best_alignment_offset(
         raise ValueError("Unknown method")
 
 
-def align(a, b, max_offset, max_lookahead=None, *, align_mode, fix_length=None):
-    # TODO: Fix the implementation and test it? Or remove the function
+def align_pair(reference_signal, delayed_signal, offset, align_mode, fix_length=None):
     """
-    Align `a` and `b`. See the documentation of `find_best_alignment_offset` for most of the args.
+    Align `reference_signal` and `delayed_signal`, given that `delayed_signal` is
+    `offset` samples delayed compared to `reference_signal`.
 
     Args:
-        align_mode (Either `"crop"` or `"pad"`): How to align `a` and `b`.
+        align_mode (Either `"crop"` or `"pad"`): How to align `reference_signal` and `delayed_signal`.
             If `crop`, "best_offset" number of elements are removed from the
             front of the "too-long" array. If `pad`, "best_offset" number of
             elements are padding to the front of the "too-short" array.
         fix_length (Either `"shortest"`, `"longest"` or `None`): How to fix the
-            lengths of `a` and `b` after alignment. If `shortest`, the longer
+            lengths of `reference_signal` and `delayed_signal` after alignment. If `shortest`, the longer
             array is cropped (at the end/right) to the length of the shorter one.
             If `longest`, the shorter array is padded (to the end/right) to the
             length of the longest one.  If `None`, lengths are not changed.
     """
-    offset, _ = find_best_alignment_offset(b, a, max_offset, max_lookahead)
-    if offset > 0:
-        # mse(a[offset:], b) = min
-        a, b = _align(a, b, offset, align_mode)
+    offset = -offset
+    if offset < 0:
+        reference_signal, delayed_signal = _align(
+            reference_signal, delayed_signal, offset, align_mode
+        )
     else:
-        # mse(a, b[offset:]) = min
-        b, a = _align(b, a, -offset, align_mode)
-    a, b = _fix(a, b, fix_length)
-    return a, b
+        delayed_signal, reference_signal = _align(
+            delayed_signal, reference_signal, -offset, align_mode
+        )
+    reference_signal, delayed_signal = _fix(
+        reference_signal, delayed_signal, fix_length
+    )
+    return reference_signal, delayed_signal
 
 
 def align_delayed_signal_with_reference(
-    reference_signal:NDArray[np.float32] , delayed_signal, offset
+    reference_signal: NDArray[np.float32], delayed_signal, offset
 ):
     """
     Return delayed_signal padded with zeros in the start or the end,
