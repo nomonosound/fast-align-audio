@@ -63,10 +63,9 @@ method to find the best offset to align two arrays, and we use the align method 
 the arrays. The np.array_equal method checks if two arrays are equal, demonstrating the
 successful alignment of the two original arrays.
 
-# Tips
+# Tip
 
-* For more reliable alignments, filter out unwanted/unrelated sounds before passing the audio snippets to fast-align-audio. E.g. if you are aligning two speech recordings, you could band-pass filter and/or denoise them first.
-* This python library was made primarily for short audio snippets, like below 10 seconds. For long audio snippets, check out [Audalign](https://github.com/benfmiller/audalign)
+For more reliable alignments, filter out unwanted/unrelated sounds before passing the audio snippets to fast-align-audio. E.g. if you are aligning two speech recordings, you could band-pass filter and/or denoise them first.
 
 # Development
 

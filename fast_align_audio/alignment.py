@@ -2,7 +2,7 @@ from typing import Optional, Tuple
 
 import numpy as np
 import _fast_align_audio
-from numpy._typing import NDArray
+from numpy.typing import NDArray
 
 
 def fast_autocorr(original, delayed, t=1):
@@ -49,7 +49,7 @@ def find_best_alignment_offset_with_corr_coef(
         middle_of_signal_index = int(np.floor(len(reference_signal) / 2))
         original_signal_slice = reference_signal[
             middle_of_signal_index : middle_of_signal_index + lookahead_samples
-                                ]
+        ]
         delayed_signal_slice = delayed_signal[
             middle_of_signal_index : middle_of_signal_index + lookahead_samples
         ]
@@ -152,6 +152,7 @@ def find_best_alignment_offset(
 
 
 def align(a, b, max_offset, max_lookahead=None, *, align_mode, fix_length=None):
+    # TODO: Fix the implementation and test it? Or remove the function
     """
     Align `a` and `b`. See the documentation of `find_best_alignment_offset` for most of the args.
 
@@ -166,7 +167,7 @@ def align(a, b, max_offset, max_lookahead=None, *, align_mode, fix_length=None):
             If `longest`, the shorter array is padded (to the end/right) to the
             length of the longest one.  If `None`, lengths are not changed.
     """
-    offset = find_best_alignment_offset(a, b, max_offset, max_lookahead)
+    offset, _ = find_best_alignment_offset(b, a, max_offset, max_lookahead)
     if offset > 0:
         # mse(a[offset:], b) = min
         a, b = _align(a, b, offset, align_mode)
@@ -175,6 +176,22 @@ def align(a, b, max_offset, max_lookahead=None, *, align_mode, fix_length=None):
         b, a = _align(b, a, -offset, align_mode)
     a, b = _fix(a, b, fix_length)
     return a, b
+
+
+def align_delayed_signal_with_reference(
+    reference_signal:NDArray[np.float32] , delayed_signal, offset
+):
+    """
+    Return delayed_signal padded with zeros in the start or the end,
+    depending on whether the offset is negative or positive.
+    """
+    placeholder = np.zeros_like(reference_signal)
+    if offset < 0:
+        offset = -offset
+        placeholder[offset:] = delayed_signal[0:-offset]
+    else:
+        placeholder[0:-offset] = delayed_signal[offset:]
+    return placeholder
 
 
 def _align(x, y, offset, align_mode):
