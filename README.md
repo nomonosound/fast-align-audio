@@ -28,7 +28,7 @@ import numpy as np
 
 # Create a random NumPy array
 reference = np.random.uniform(size=10_000).astype("float32")
-delayed = np.pad(reference, (121, 0))
+delayed = np.pad(reference, (121, 0))[0:10_000]
 
 # Find the best offset for aligning two arrays
 offset, mse = fast_align_audio.find_best_alignment_offset(
@@ -48,10 +48,10 @@ negative_offset, mse2 = fast_align_audio.find_best_alignment_offset(
 print(negative_offset)  # -121
 
 # Align two arrays and confirm they're equal post alignment
-arr1, arr2 = fast_align_audio.align_pair(
-    reference, delayed, offset=offset, align_mode="crop"
+aligned = fast_align_audio.align_delayed_signal_with_reference(
+    reference, delayed, offset=offset
 )
-np.array_equal(reference, arr1) and np.array_equal(reference, arr2)  # True
+print(np.array_equal(reference[500:600], aligned[500:600]))  # True
 ```
 
 In this example, we first create a random numpy array. We then call the `find_best_alignment_offset`
@@ -63,6 +63,7 @@ successful alignment of the two original arrays.
 
 * For more reliable alignments, filter out unwanted/unrelated sounds before passing the audio snippets to fast-align-audio. E.g. if you are aligning two speech recordings, you could band-pass filter and/or denoise them first.
 * This library assumes that the delay is fixed throughout the audio snippet. If you need something that aligns audio tracks in a dynamic way (e.g. due to distance between microphones changing over time), look elsewhere.
+* The `"mse"` method is sensitive to loudness differences. If you use this method, make sure the two input audio snippets have roughly the same loudness
 
 # Development
 

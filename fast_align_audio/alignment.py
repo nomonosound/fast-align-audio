@@ -151,43 +151,18 @@ def find_best_alignment_offset(
         raise ValueError("Unknown method")
 
 
-def align_pair(reference_signal, delayed_signal, offset, align_mode, fix_length=None):
-    """
-    Align `reference_signal` and `delayed_signal`, given that `delayed_signal` is
-    `offset` samples delayed compared to `reference_signal`.
-
-    Args:
-        align_mode (Either `"crop"` or `"pad"`): How to align `reference_signal` and `delayed_signal`.
-            If `crop`, "best_offset" number of elements are removed from the
-            front of the "too-long" array. If `pad`, "best_offset" number of
-            elements are padding to the front of the "too-short" array.
-        fix_length (Either `"shortest"`, `"longest"` or `None`): How to fix the
-            lengths of `reference_signal` and `delayed_signal` after alignment. If `shortest`, the longer
-            array is cropped (at the end/right) to the length of the shorter one.
-            If `longest`, the shorter array is padded (to the end/right) to the
-            length of the longest one.  If `None`, lengths are not changed.
-    """
-    offset = -offset
-    if offset < 0:
-        reference_signal, delayed_signal = _align(
-            reference_signal, delayed_signal, offset, align_mode
-        )
-    else:
-        delayed_signal, reference_signal = _align(
-            delayed_signal, reference_signal, -offset, align_mode
-        )
-    reference_signal, delayed_signal = _fix(
-        reference_signal, delayed_signal, fix_length
-    )
-    return reference_signal, delayed_signal
-
-
 def align_delayed_signal_with_reference(
-    reference_signal: NDArray[np.float32], delayed_signal, offset
+    reference_signal: NDArray[np.float32],
+    delayed_signal: NDArray[np.float32],
+    offset: int,
 ):
     """
-    Return delayed_signal padded with zeros in the start or the end,
-    depending on whether the offset is negative or positive.
+    Align delayed_signal with the reference signal, given the offset.
+    The start or end is filled with `offset` amount of zeros.
+
+    This function assumes that reference_signal and delayed_signal have the same length.
+
+    The returned array has the same length as the reference signal.
     """
     placeholder = np.zeros_like(reference_signal)
     if offset < 0:
@@ -196,28 +171,3 @@ def align_delayed_signal_with_reference(
     else:
         placeholder[0:-offset] = delayed_signal[offset:]
     return placeholder
-
-
-def _align(x, y, offset, align_mode):
-    if align_mode == "crop":
-        x = x[offset:]
-    elif align_mode == "pad":
-        y = np.pad(y, (offset, 0))
-    return x, y
-
-
-def _fix(x, y, fix_mode):
-    if fix_mode is None:
-        return x, y
-    elif fix_mode == "shortest":
-        min_len = min(len(x), len(y))
-        x = x[:min_len]
-        y = y[:min_len]
-        return x, y
-    elif fix_mode == "longest":
-        max_len = max(len(x), len(y))
-        x = np.pad(x, (0, max_len - len(x)))
-        y = np.pad(y, (0, max_len - len(y)))
-        return x, y
-    else:
-        raise ValueError(f"fix_length={fix_mode!r} not understood")
