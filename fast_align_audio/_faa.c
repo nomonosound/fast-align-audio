@@ -48,26 +48,32 @@ static size_t my_min3(size_t a, size_t b, size_t c) {
     return my_min(my_min(a, b), c);
 }
 
-ssize_t fast_find_alignment(size_t a_len, float *a,
-                            size_t b_len, float *b,
-                            size_t max_offset, size_t max_lookahead) {
-    float min_val = LARGE_VAL;
-    ssize_t min_idx = 0;
+typedef struct {
+    ssize_t min_idx;
+    float min_val;
+} MinResult;
+
+MinResult fast_find_alignment(size_t a_len, float *a,
+                               size_t b_len, float *b,
+                               size_t max_offset, size_t max_lookahead) {
+    MinResult result = {0, LARGE_VAL};
+
     for (size_t i = 0; i < my_min(my_max(a_len, b_len), max_offset); ++i) {
         if (i < a_len) {
-            float d1 = fastmse(min_val, my_min3(a_len - i, b_len, max_lookahead), &a[i], b);
-            if (d1 < min_val) {
-                min_val = d1;
-                min_idx = i;
+            float d1 = fastmse(result.min_val, my_min3(a_len - i, b_len, max_lookahead), &a[i], b);
+            if (d1 < result.min_val) {
+                result.min_val = d1;
+                result.min_idx = i;
             }
         }
         if (i < b_len) {
-            float d2 = fastmse(min_val, my_min3(a_len, b_len - i, max_lookahead), a, &b[i]);
-            if (d2 < min_val) {
-                min_val = d2;
-                min_idx = -(ssize_t)i;
+            float d2 = fastmse(result.min_val, my_min3(a_len, b_len - i, max_lookahead), a, &b[i]);
+            if (d2 < result.min_val) {
+                result.min_val = d2;
+                result.min_idx = -(ssize_t)i;
             }
         }
     }
-    return min_idx;
+
+    return result;
 }
