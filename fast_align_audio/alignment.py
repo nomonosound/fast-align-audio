@@ -130,7 +130,7 @@ def find_best_alignment_offset(
         if consider_both_polarities:
             inverse_polarity_result = _fast_align_audio.lib.fast_find_alignment(
                 len(delayed_signal),
-                _fast_align_audio.ffi.cast("float *", delayed_signal.ctypes.data),
+                _fast_align_audio.ffi.cast("float *", (-delayed_signal).ctypes.data),
                 len(reference_signal),
                 _fast_align_audio.ffi.cast("float *", reference_signal.ctypes.data),
                 max_offset_samples,

@@ -15,6 +15,10 @@ TEST_FIXTURES_DIR = DEMO_DIR / "test_fixtures"
 DEBUG = False
 
 
+def convert_decibels_to_amplitude_ratio(decibels):
+    return 10 ** (decibels / 20)
+
+
 class TestFindBestAlignmentOffset:
     def test_simple_alignment_positive_offset(self):
         reference = np.array([0.0, 1.0, 0.0, 0.0], dtype=np.float32)
@@ -42,6 +46,74 @@ class TestFindBestAlignmentOffset:
         )
         assert_array_almost_equal(aligned, reference)
 
+    def test_robustness_to_gain_differences(self):
+        folder_name = "multi_mic1"
+        main, sr = librosa.load(TEST_FIXTURES_DIR / folder_name / "main.flac", sr=None)
+        other, _ = librosa.load(
+            TEST_FIXTURES_DIR / folder_name / "other1.flac", sr=None
+        )
+
+        max_offset_samples = int(0.01 * sr)
+
+        offset_reference, corr = fast_align_audio.find_best_alignment_offset(
+            main,
+            other,
+            max_offset_samples=max_offset_samples,
+            method="corr",
+        )
+
+        for gain_db in (-10, -20, -30, -40):
+            gain = convert_decibels_to_amplitude_ratio(gain_db)
+            other_gained = other * gain
+            offset_mse, mse = fast_align_audio.find_best_alignment_offset(
+                main,
+                other_gained,
+                max_offset_samples=max_offset_samples,
+                method="mse",
+            )
+            assert offset_mse == offset_reference
+            offset_corr, corr = fast_align_audio.find_best_alignment_offset(
+                main,
+                other_gained,
+                max_offset_samples=max_offset_samples,
+                method="corr",
+            )
+            assert offset_corr == offset_reference
+
+    def test_robustness_to_polarity_difference(self):
+        folder_name = "multi_mic1"
+        main, sr = librosa.load(TEST_FIXTURES_DIR / folder_name / "main.flac", sr=None)
+        other, _ = librosa.load(
+            TEST_FIXTURES_DIR / folder_name / "other1.flac", sr=None
+        )
+
+        max_offset_samples = int(0.01 * sr)
+
+        offset_reference, corr = fast_align_audio.find_best_alignment_offset(
+            main,
+            other,
+            max_offset_samples=max_offset_samples,
+            method="corr",
+        )
+
+        other_polarity_inversed = -other
+        offset_mse, mse = fast_align_audio.find_best_alignment_offset(
+            main,
+            other_polarity_inversed,
+            max_offset_samples=max_offset_samples,
+            method="mse",
+            consider_both_polarities=True,
+        )
+        assert offset_mse == offset_reference
+        offset_corr, corr = fast_align_audio.find_best_alignment_offset(
+            main,
+            other_polarity_inversed,
+            max_offset_samples=max_offset_samples,
+            method="corr",
+            consider_both_polarities=True,
+        )
+        assert offset_corr == offset_reference
+
     @pytest.mark.parametrize("folder_name", ["multi_mic1", "multi_mic2"])
     def test_multi_mic(self, folder_name):
         main, sr = librosa.load(TEST_FIXTURES_DIR / folder_name / "main.flac", sr=None)
@@ -54,23 +126,21 @@ class TestFindBestAlignmentOffset:
             )
             others.append(other)
 
-        max_offset_samples = int(0.05 * sr)
+        max_offset_samples = int(0.01 * sr)
 
         for i, other in enumerate(others):
-            # Test that MSE and corr give similar results
+            # Test that mse and corr give similar results
             offset_mse, mse = fast_align_audio.find_best_alignment_offset(
                 main,
                 other,
                 max_offset_samples=max_offset_samples,
                 method="mse",
-                consider_both_polarities=True,
             )
             offset_corr, corr = fast_align_audio.find_best_alignment_offset(
                 main,
                 other,
                 max_offset_samples=max_offset_samples,
                 method="corr",
-                consider_both_polarities=True,
             )
             if DEBUG:
                 print(
