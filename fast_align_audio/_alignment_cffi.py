@@ -3,8 +3,14 @@ from cffi import FFI
 
 
 ffibuilder = FFI()
+ffibuilder.cdef("""
+    typedef struct {
+        ssize_t min_idx;
+        float min_val;
+    } MinResult;
+""")
 ffibuilder.cdef(
-    "ssize_t fast_find_alignment(size_t, float *, size_t, float *, size_t, size_t);"
+    "MinResult fast_find_alignment(size_t, float *, size_t, float *, size_t, size_t);"
 )
 
 script_dir = os.path.dirname(os.path.realpath(__file__))

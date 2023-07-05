@@ -15,7 +15,7 @@ class TestFindBestAlignmentOffset:
     def test_simple_padded_array(self):
         reference = np.random.uniform(size=10_000).astype("float32")
         delayed = np.pad(reference, (121, 0))
-        offset = fast_align_audio.find_best_alignment_offset(
+        offset, mse = fast_align_audio.find_best_alignment_offset(
             reference, delayed, max_offset_samples=1000, lookahead_samples=5000
         )
         assert offset == 121
@@ -35,11 +35,24 @@ class TestFindBestAlignmentOffset:
         max_offset_samples = int(0.05 * sr)
 
         for i, other in enumerate(others):
-            offset_mse = fast_align_audio.find_best_alignment_offset(
-                main, other, max_offset_samples=max_offset_samples, method="mse"
+            # Test that MSE and corr give similar results
+            offset_mse, mse = fast_align_audio.find_best_alignment_offset(
+                main,
+                other,
+                max_offset_samples=max_offset_samples,
+                method="mse",
+                consider_both_polarities=True,
             )
-            offset_corr = fast_align_audio.find_best_alignment_offset(
-                main, other, max_offset_samples=max_offset_samples, method="corr"
+            offset_corr, corr = fast_align_audio.find_best_alignment_offset(
+                main,
+                other,
+                max_offset_samples=max_offset_samples,
+                method="corr",
+                consider_both_polarities=True,
             )
-            print(f"{other_filenames[i]} mse vs. corr:", offset_mse, offset_corr)
+            # print(
+            #     f"{other_filenames[i]} mse ({mse:.6f}) vs. corr ({corr:.4f}):",
+            #     offset_mse,
+            #     offset_corr,
+            # )
             assert offset_mse == pytest.approx(offset_corr, abs=1)
