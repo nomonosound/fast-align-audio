@@ -62,7 +62,7 @@ class TestFindBestAlignmentOffset:
             method="corr",
         )
 
-        for gain_db in (-10, -20, -30):
+        for gain_db in (-10, -20, -30):  # TODO: Make it able to go down to -50
             gain = convert_decibels_to_amplitude_ratio(gain_db)
             other_gained = other * gain
             offset_mse, mse = fast_align_audio.find_best_alignment_offset(

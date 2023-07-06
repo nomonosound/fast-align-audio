@@ -70,3 +70,7 @@ successful alignment of the two original arrays.
 * Install dev/build/test dependencies as denoted in setup.py
 * `python setup.py develop`
 * `pytest`
+
+# Acknowledgements
+
+Original C implementation by jonashaag. Now maintained/backed by [Nomono](https://nomono.co/).
