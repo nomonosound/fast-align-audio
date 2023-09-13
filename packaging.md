@@ -7,4 +7,4 @@
 * Place all the fresh whl files in dist/
 * `python -m twine upload dist/*`
 * Add a tag with name "vx.y.z" to the commit
-* Go to https://github.com/iver56/fast-align-audio/releases and create a release where you choose the new tag
+* Go to https://github.com/nomonosound/fast-align-audio/releases and create a release where you choose the new tag
