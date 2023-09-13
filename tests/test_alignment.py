@@ -161,3 +161,57 @@ class TestFindBestAlignmentOffset:
                     int(sr),
                     aligned,
                 )
+
+    def test_shorter_delayed_audio_alignment_zero_offset(self):
+        reference_audio = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+        delayed_audio = np.array([1.0, 2.0, 3.0])
+        offset = 0
+        aligned_audio = fast_align_audio.align_delayed_signal_with_reference(
+            reference_audio, delayed_audio, offset
+        )
+        assert_array_almost_equal(aligned_audio, np.array([1.0, 2.0, 3.0, 0.0, 0.0]))
+
+    def test_longer_delayed_audio_alignment_zero_offset(self):
+        reference_audio = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+        delayed_audio = np.array([1.0, 2.0, 3.0, 4.1, 5.1, 6.0, 7.1])
+        offset = 0
+        aligned_audio = fast_align_audio.align_delayed_signal_with_reference(
+            reference_audio, delayed_audio, offset
+        )
+        assert_array_almost_equal(aligned_audio, np.array([1.0, 2.0, 3.0, 4.1, 5.1]))
+
+    def test_shorter_delayed_audio_alignment_positive_offset(self):
+        reference_audio = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+        delayed_audio = np.array([0.5, 1.0, 2.0, 3.1])
+        offset = 1
+        aligned_audio = fast_align_audio.align_delayed_signal_with_reference(
+            reference_audio, delayed_audio, offset
+        )
+        assert_array_almost_equal(aligned_audio, np.array([1.0, 2.0, 3.1, 0.0, 0.0]))
+
+    def test_longer_delayed_audio_alignment_positive_offset(self):
+        reference_audio = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+        delayed_audio = np.array([0.5, 1.0, 2.0, 3.1, 4.1, 5.0, 6.0])
+        offset = 1
+        aligned_audio = fast_align_audio.align_delayed_signal_with_reference(
+            reference_audio, delayed_audio, offset
+        )
+        assert_array_almost_equal(aligned_audio, np.array([1.0, 2.0, 3.1, 4.1, 5.0]))
+
+    def test_shorter_delayed_audio_alignment_negative_offset(self):
+        reference_audio = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+        delayed_audio = np.array([3.0, 4.0, 5.1])
+        offset = -2
+        aligned_audio = fast_align_audio.align_delayed_signal_with_reference(
+            reference_audio, delayed_audio, offset
+        )
+        assert_array_almost_equal(aligned_audio, np.array([0.0, 0.0, 3.0, 4.0, 5.1]))
+
+    def test_longer_delayed_audio_alignment_negative_offset(self):
+        reference_audio = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+        delayed_audio = np.array([3.1, 4.0, 5.0, 6.0, 7.1, 8.0])
+        offset = -2
+        aligned_audio = fast_align_audio.align_delayed_signal_with_reference(
+            reference_audio, delayed_audio, offset
+        )
+        assert_array_almost_equal(aligned_audio, np.array([0.0, 0.0, 3.1, 4.0, 5.0]))

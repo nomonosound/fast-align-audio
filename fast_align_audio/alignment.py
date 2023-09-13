@@ -155,19 +155,37 @@ def align_delayed_signal_with_reference(
     reference_signal: NDArray[np.float32],
     delayed_signal: NDArray[np.float32],
     offset: int,
-):
+) -> NDArray[np.float32]:
     """
     Align delayed_signal with the reference signal, given the offset.
+
+    The offset denotes the amount of samples the delayed_signal is delayed compared to
+    the reference_signal.
+
     The start or end is filled with `offset` amount of zeros.
 
-    This function assumes that reference_signal and delayed_signal have the same length.
-
-    The returned array has the same length as the reference signal.
+    reference_signal and delayed_signal can have different length, but the returned
+    array will have the same length as the reference signal.
     """
     placeholder = np.zeros_like(reference_signal)
     if offset < 0:
-        offset = -offset
-        placeholder[offset:] = delayed_signal[0:-offset]
+        abs_offset = -offset
+        insert_length = placeholder.shape[-1] - abs_offset
+        if delayed_signal.shape[-1] > insert_length:
+            placeholder[..., abs_offset:] = delayed_signal[..., 0:insert_length]
+        else:
+            placeholder[..., abs_offset : abs_offset + delayed_signal.shape[-1]] = (
+                delayed_signal
+            )
+    elif offset == 0:
+        if delayed_signal.shape[-1] > placeholder.shape[-1]:
+            placeholder[..., :] = delayed_signal[..., : placeholder.shape[-1]]
+        else:
+            placeholder[..., 0 : delayed_signal.shape[-1]] = delayed_signal
     else:
-        placeholder[0:-offset] = delayed_signal[offset:]
+        # positive offset
+        aligned = delayed_signal[offset:]
+        if aligned.shape[-1] > placeholder.shape[-1]:
+            aligned = aligned[..., : placeholder.shape[-1]]
+        placeholder[..., : aligned.shape[-1]] = aligned
     return placeholder
