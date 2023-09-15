@@ -1,4 +1,4 @@
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List
 
 import numpy as np
 import _fast_align_audio
@@ -155,7 +155,7 @@ def align_delayed_signal_with_reference(
     reference_signal: NDArray[np.float32],
     delayed_signal: NDArray[np.float32],
     offset: int,
-) -> NDArray[np.float32]:
+) -> Tuple[NDArray[np.float32], List[Tuple[int, int]]]:
     """
     Align delayed_signal with the reference signal, given the offset.
 
@@ -166,26 +166,51 @@ def align_delayed_signal_with_reference(
 
     reference_signal and delayed_signal can have different length, but the returned
     array will have the same length as the reference signal.
+
+    This function returns a tuple. The first entry in the tuple is the aligned signal,
+    and the second is a list of tuples (start index, end index) that denote any gaps at
+    the edges.
     """
     placeholder = np.zeros_like(reference_signal)
+    gaps = []
     if offset < 0:
         abs_offset = -offset
         insert_length = placeholder.shape[-1] - abs_offset
+        gaps.append((0, abs_offset))
         if delayed_signal.shape[-1] > insert_length:
             placeholder[..., abs_offset:] = delayed_signal[..., 0:insert_length]
         else:
             placeholder[..., abs_offset : abs_offset + delayed_signal.shape[-1]] = (
                 delayed_signal
             )
+            if abs_offset + delayed_signal.shape[-1] < placeholder.shape[-1]:
+                gaps.append(
+                    (abs_offset + delayed_signal.shape[-1], placeholder.shape[-1])
+                )
     elif offset == 0:
         if delayed_signal.shape[-1] > placeholder.shape[-1]:
             placeholder[..., :] = delayed_signal[..., : placeholder.shape[-1]]
         else:
             placeholder[..., 0 : delayed_signal.shape[-1]] = delayed_signal
+            if delayed_signal.shape[-1] < placeholder.shape[-1]:
+                gaps.append((delayed_signal.shape[-1], placeholder.shape[-1]))
     else:
         # positive offset
         aligned = delayed_signal[offset:]
         if aligned.shape[-1] > placeholder.shape[-1]:
             aligned = aligned[..., : placeholder.shape[-1]]
+        elif aligned.shape[-1] < placeholder.shape[-1]:
+            gaps.append((aligned.shape[-1], placeholder.shape[-1]))
         placeholder[..., : aligned.shape[-1]] = aligned
-    return placeholder
+    return placeholder, gaps
+
+
+def fill_any_edge_gaps_in_aligned_signal_with_reference(
+    reference_signal: NDArray[np.float32],
+    aligned_signal: NDArray[np.float32],
+    gaps: List[Tuple[int, int]],
+    sample_rate: int,
+    adjust_reference_gain: bool = True,
+    crossfade_duration: float = 0.25,
+) -> NDArray[np.float32]:
+    raise NotImplementedError()
