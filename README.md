@@ -64,6 +64,7 @@ successful alignment of the two original arrays.
 * For more reliable alignments, filter out unwanted/unrelated sounds before passing the audio snippets to fast-align-audio. E.g. if you are aligning two speech recordings, you could band-pass filter and/or denoise them first.
 * This library assumes that the delay is fixed throughout the audio snippet. If you need something that aligns audio tracks in a dynamic way (e.g. due to distance between microphones changing over time), look elsewhere.
 * The `"mse"` method is sensitive to loudness differences. If you use this method, make sure the two input audio snippets have roughly the same loudness
+* This lib only works well for small offsets, like up to 500 ms, and suitable audio file durations, like for example between 3 and 45 seconds. If you have large audio files with large offsets between them, a different algorithm may be required to solve the problem well.
 
 # Development
 
