@@ -171,6 +171,7 @@ def align_delayed_signal_with_reference(
     and the second is a list of tuples (start index, end index) that denote any gaps at
     the edges.
     """
+    assert type(offset) == int, "offset must be an int"
     placeholder = np.zeros_like(reference_signal)
     gaps = []
     if offset < 0:
@@ -196,7 +197,7 @@ def align_delayed_signal_with_reference(
                 gaps.append((delayed_signal.shape[-1], placeholder.shape[-1]))
     else:
         # positive offset
-        aligned = delayed_signal[offset:]
+        aligned = delayed_signal[..., offset:]
         if aligned.shape[-1] > placeholder.shape[-1]:
             aligned = aligned[..., : placeholder.shape[-1]]
         elif aligned.shape[-1] < placeholder.shape[-1]:
