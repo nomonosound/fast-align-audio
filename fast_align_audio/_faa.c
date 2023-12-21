@@ -2,6 +2,11 @@
 #include <math.h>
 #include <string.h>
 
+#ifdef _MSC_VER
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+#endif
+
 #define LARGE_VAL 1e20f
 
 static float sum_m256(__m256 x) {
