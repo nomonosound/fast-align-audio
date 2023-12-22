@@ -49,7 +49,7 @@ static size_t my_min3(size_t a, size_t b, size_t c) {
 }
 
 typedef struct {
-    ssize_t min_idx;
+    int min_idx;
     float min_val;
 } MinResult;
 
@@ -70,7 +70,7 @@ MinResult fast_find_alignment(size_t a_len, float *a,
             float d2 = fastmse(result.min_val, my_min3(a_len, b_len - i, max_lookahead), a, &b[i]);
             if (d2 < result.min_val) {
                 result.min_val = d2;
-                result.min_idx = -(ssize_t)i;
+                result.min_idx = -i;
             }
         }
     }

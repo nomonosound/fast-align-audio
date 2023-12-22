@@ -5,7 +5,7 @@ from cffi import FFI
 ffibuilder = FFI()
 ffibuilder.cdef("""
     typedef struct {
-        ssize_t min_idx;
+        int min_idx;
         float min_val;
     } MinResult;
 """)

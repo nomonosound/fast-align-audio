@@ -48,6 +48,8 @@ setup(
         "License :: OSI Approved :: ISC License (ISCL)",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
     ],
     url="https://github.com/nomonosound/fast-align-audio",
 )
