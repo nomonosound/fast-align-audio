@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, ij/python3.10-compat ]
 
 jobs:
   build:
