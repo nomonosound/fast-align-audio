@@ -48,10 +48,10 @@ negative_offset, mse2 = fast_align_audio.find_best_alignment_offset(
 print(negative_offset)  # -121
 
 # Align two arrays and confirm they're equal post alignment
-aligned = fast_align_audio.align_delayed_signal_with_reference(
+aligned_audio, gaps = fast_align_audio.align_delayed_signal_with_reference(
     reference, delayed, offset=offset
 )
-print(np.array_equal(reference[500:600], aligned[500:600]))  # True
+print(np.array_equal(reference[500:600], aligned_audio[500:600]))  # True
 ```
 
 In this example, we first create a random numpy array. We then call the `find_best_alignment_offset`
