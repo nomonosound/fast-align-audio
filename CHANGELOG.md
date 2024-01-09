@@ -3,6 +3,17 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2024-01-09
+
+### Changed
+
+* **Breaking change**: `align_delayed_signal_with_reference` now returns a list of gaps in addition to the aligned signal. So it now returns a `Tuple[NDArray[np.float32], List[Tuple[int, int]]]` instead of a `NDArray[np.float32]`.
+* Add support for python 3.10 and 3.11
+
+### Fixed
+
+* Fix a bug where `align_delayed_signal_with_reference` didn't work when the input was 2D and the offset was positive
+
 ## [0.2.1] - 2023-09-13
 
 ### Changed
