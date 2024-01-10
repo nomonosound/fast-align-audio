@@ -26,7 +26,7 @@ jobs:
       - name: Build and test wheels
         env:
           CIBW_ARCHS: "auto64"
-          CIBW_SKIP: "cp36-* cp37-* pp* cp312-*"
+          CIBW_SKIP: "cp36-* cp37-* cp38-* pp38-* pp310-* cp312-*"
           CIBW_TEST_REQUIRES: cffi pytest librosa==0.10.0.post2
           CIBW_TEST_COMMAND: "pytest {project}/tests"
         run: |
