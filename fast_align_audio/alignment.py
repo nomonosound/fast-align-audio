@@ -152,7 +152,7 @@ def find_best_alignment_offset(
 
 
 def align_delayed_signal_with_reference(
-    reference_signal: NDArray[np.float32],
+    reference_length: int,
     delayed_signal: NDArray[np.float32],
     offset: int,
 ) -> Tuple[NDArray[np.float32], List[Tuple[int, int]]]:
@@ -160,7 +160,7 @@ def align_delayed_signal_with_reference(
     Align delayed_signal with the reference signal, given the offset.
 
     The offset denotes the amount of samples the delayed_signal is delayed compared to
-    the reference_signal.
+    the reference signal.
 
     The start or end is filled with `offset` amount of zeros.
 
@@ -172,7 +172,9 @@ def align_delayed_signal_with_reference(
     the edges.
     """
     assert type(offset) == int, "offset must be an int"
-    placeholder = np.zeros_like(reference_signal)
+    placeholder_shape = list(delayed_signal.shape)
+    placeholder_shape[-1] = reference_length
+    placeholder = np.zeros(shape=placeholder_shape, dtype=delayed_signal.dtype)
     gaps = []
     if offset < 0:
         abs_offset = -offset
