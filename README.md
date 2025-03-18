@@ -53,7 +53,7 @@ print(negative_offset)  # -121
 
 # Align two arrays and confirm they're equal post alignment
 aligned_audio, gaps = fast_align_audio.align_delayed_signal_with_reference(
-    reference, delayed, offset=offset
+    reference.shape[-1], delayed, offset=offset
 )
 print(np.array_equal(reference[500:600], aligned_audio[500:600]))  # True
 ```
