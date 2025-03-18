@@ -37,7 +37,7 @@ setup(
     setup_requires=["cffi>=1.0.0"],
     tests_require=["soundfile", "pytest"],
     cffi_modules=["fast_align_audio/_alignment_cffi.py:ffibuilder"],
-    install_requires=["cffi>=1.0.0", "numpy>=1.21,<2"],
+    install_requires=["cffi>=1.0.0", "numpy>=2,<3"],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
