@@ -3,6 +3,22 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2025-03-18
+
+### Added
+
+* Distribute source (.tar.gz) on PyPI in addition to built wheels
+
+### Changed
+
+* **Breaking change**: The first argument of `align_delayed_signal_with_reference`, is now `reference_length` (int) instead of `reference_signal` (NDArray[np.float32])
+* Target numpy 2.x instead of 1.x. If you still depend on numpy 1.x, you need an older version of fast-align-audio.
+
+### Removed
+
+* Remove support for Python 3.8
+* Remove musllinux from the build matrix
+
 ## [0.3.0] - 2024-01-09
 
 ### Changed

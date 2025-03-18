@@ -70,6 +70,26 @@ successful alignment of the two original arrays.
 * The `"mse"` method is sensitive to loudness differences. If you use this method, make sure the two input audio snippets have roughly the same loudness
 * This lib only works well for small offsets, like up to 500 ms, and suitable audio file durations, like for example between 3 and 45 seconds. If you have large audio files with large offsets between them, a different algorithm may be required to solve the problem well.
 
+# Changelog
+
+## [0.4.0] - 2025-03-18
+
+### Added
+
+* Distribute source (.tar.gz) on PyPI in addition to wheels
+
+### Changed
+
+* **Breaking change**: The first argument of `align_delayed_signal_with_reference`, is now `reference_length` (`int`) instead of `reference_signal` (`NDArray[np.float32]`)
+* Target numpy 2.x instead of 1.x. If you still depend on numpy 1.x, you need an older version of fast-align-audio.
+
+### Removed
+
+* Remove support for Python 3.8
+* Remove musllinux from the build matrix
+
+For the complete changelog, go to [CHANGELOG.md](CHANGELOG.md)
+
 # Development
 
 * Install dev/build/test dependencies as denoted in setup.py
