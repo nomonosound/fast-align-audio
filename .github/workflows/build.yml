@@ -28,7 +28,12 @@ jobs:
 
       - name: Build and test wheels
         env:
-          CIBW_BEFORE_ALL_LINUX: "yum install -y libsndfile-devel"
+          CIBW_BEFORE_ALL_LINUX: |
+            if [ -f "/etc/alpine-release" ]; then
+              apk add --no-cache libsndfile-dev
+            else
+              yum install -y libsndfile-devel
+            fi
           CIBW_ARCHS: "auto64"
           CIBW_SKIP: "cp36-* cp37-* cp38-* cp312-* cp313-* pp*"
           CIBW_TEST_REQUIRES: cffi pytest librosa==0.10.2.post1
