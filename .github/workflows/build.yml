@@ -30,7 +30,7 @@ jobs:
         env:
           CIBW_BEFORE_ALL_LINUX: "yum install -y libsndfile-devel"
           CIBW_ARCHS: "auto64"
-          CIBW_SKIP: "cp36-* cp37-* cp38-* cp312-* pp*"
+          CIBW_SKIP: "cp36-* cp37-* cp38-* cp312-* cp313-* pp*"
           CIBW_TEST_REQUIRES: cffi pytest librosa==0.10.2.post1
           CIBW_TEST_COMMAND: "pytest {project}/tests"
         run: |
