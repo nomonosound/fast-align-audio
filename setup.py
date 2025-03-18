@@ -35,7 +35,7 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages(exclude=["test_fixtures", "tests"]),
     setup_requires=["cffi>=1.0.0"],
-    tests_require=["librosa==0.10.0.post2", "pytest"],
+    tests_require=["soundfile", "pytest"],
     cffi_modules=["fast_align_audio/_alignment_cffi.py:ffibuilder"],
     install_requires=["cffi>=1.0.0", "numpy>=1.21,<2"],
     classifiers=[
