@@ -35,7 +35,7 @@ jobs:
               yum install -y libsndfile-devel
             fi
           CIBW_ARCHS: "auto64"
-          CIBW_SKIP: "cp36-* cp37-* cp38-* cp312-* cp313-* pp* *-musllinux_*"
+          CIBW_SKIP: "cp36-* cp37-* cp38-* cp313-* pp* *-musllinux_*"
           CIBW_TEST_REQUIRES: cffi pytest soundfile
           CIBW_TEST_COMMAND: "pytest {project}/tests"
         run: |
