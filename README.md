@@ -15,7 +15,7 @@ used to align other kinds of time-series data that are represented as 1D NumPy a
 # Installation
 
 [![PyPI version](https://img.shields.io/pypi/v/fast-align-audio.svg?style=flat)](https://pypi.org/project/fast-align-audio/)
-![python 3.9, 3.10, 3.11](https://img.shields.io/badge/Python-3.9%20|%203.10%20|%203.11-blue)
+![python 3.9, 3.10, 3.11, 3.12](https://img.shields.io/badge/Python-3.9%20|%203.10%20|%203.11%20|%203.12-blue)
 ![os: Linux, Windows](https://img.shields.io/badge/OS-Linux%20%28x86--64%29%20|%20Windows%20%28x86--64%29-blue)
 
 ```
@@ -72,21 +72,11 @@ successful alignment of the two original arrays.
 
 # Changelog
 
-## [0.4.0] - 2025-03-18
+## [0.5.0] - 2025-06-28
 
 ### Added
 
-* Distribute source (.tar.gz) on PyPI in addition to wheels
-
-### Changed
-
-* **Breaking change**: The first argument of `align_delayed_signal_with_reference`, is now `reference_length` (`int`) instead of `reference_signal` (`NDArray[np.float32]`)
-* Target numpy 2.x instead of 1.x. If you still depend on numpy 1.x, you need an older version of fast-align-audio.
-
-### Removed
-
-* Remove support for Python 3.8
-* Remove musllinux from the build matrix
+* Add wheels for Python 3.12
 
 For the complete changelog, go to [CHANGELOG.md](CHANGELOG.md)
 
