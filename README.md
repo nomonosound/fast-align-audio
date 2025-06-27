@@ -16,7 +16,7 @@ used to align other kinds of time-series data that are represented as 1D NumPy a
 
 [![PyPI version](https://img.shields.io/pypi/v/fast-align-audio.svg?style=flat)](https://pypi.org/project/fast-align-audio/)
 ![python 3.9, 3.10, 3.11](https://img.shields.io/badge/Python-3.9%20|%203.10%20|%203.11-blue)
-![os: Linux, Windows](https://img.shields.io/badge/OS-Linux%20%28x86%29%20|%20Windows%20%28x86%29-blue)
+![os: Linux, Windows](https://img.shields.io/badge/OS-Linux%20%28x86--64%29%20|%20Windows%20%28x86--64%29-blue)
 
 ```
 $ pip install fast-align-audio
