@@ -15,7 +15,7 @@ used to align other kinds of time-series data that are represented as 1D NumPy a
 # Installation
 
 [![PyPI version](https://img.shields.io/pypi/v/fast-align-audio.svg?style=flat)](https://pypi.org/project/fast-align-audio/)
-![python 3.9, 3.10, 3.11, 3.12](https://img.shields.io/badge/Python-3.9%20|%203.10%20|%203.11%20|%203.12-blue)
+![python 3.9, 3.10, 3.11, 3.12, 3.13](https://img.shields.io/badge/Python-3.9%20|%203.10%20|%203.11%20|%203.12%20|%203.13-blue)
 ![os: Linux, Windows](https://img.shields.io/badge/OS-Linux%20%28x86--64%29%20|%20Windows%20%28x86--64%29-blue)
 
 ```
@@ -72,11 +72,11 @@ successful alignment of the two original arrays.
 
 # Changelog
 
-## [0.5.0] - 2025-06-28
+## [0.6.0] - 2025-06-28
 
 ### Added
 
-* Add wheels for Python 3.12
+* Add support for Python 3.13
 
 For the complete changelog, go to [CHANGELOG.md](CHANGELOG.md)
 
